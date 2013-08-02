@@ -68,6 +68,7 @@ class LanguagePack::Ruby < LanguagePack::Base
 
   def compile
     Dir.chdir(build_path)
+    check_for_database_url
     remove_vendor_bundle
     install_ruby
     install_jvm
@@ -350,6 +351,12 @@ ERROR
     FileUtils.mkdir_p dir
     Dir.chdir(dir) do |dir|
       run("curl #{VENDOR_URL}/#{LIBYAML_PATH}.tgz -s -o - | tar xzf -")
+    end
+  end
+
+  def check_for_database_url
+    unless ENV["DATABASE_URL"]
+      error "Can't find DATABASE_URL - try enabling the user-env-compile labs feature (heroku labs:enable user-env-compile)"
     end
   end
 
